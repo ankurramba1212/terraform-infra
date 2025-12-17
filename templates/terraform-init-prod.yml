@@ -9,5 +9,5 @@ steps:
     backendServiceArm: $(backend_SVC)
     backendAzureRmResourceGroupName: 'ankur_rg_dont_delete'
     backendAzureRmStorageAccountName: 'todoappaestorage1'
-    backendAzureRmContainerName: 'devcontainer'
-    backendAzureRmKey: 'preprod.terraform.tfstate'
+    backendAzureRmContainerName: 'prodcontainer'
+    backendAzureRmKey: 'prod.terraform.tfstate'

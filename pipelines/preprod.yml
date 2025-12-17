@@ -1,0 +1,61 @@
+trigger:
+  branches:
+    include:
+      - feature/*
+      - main
+  paths:
+    include:
+      - env/preprod/**
+
+pool:
+  name: infraagent
+  demands:
+    - Agent.Name -equals infraagentpool
+
+variables:
+  - group: preprod-variables
+
+stages:
+- stage: ScanningStage
+  jobs:
+    - job: Scanning
+      steps:
+        - template: ../templates/scanning.yml
+
+- stage: PlanningStage
+  dependsOn: ScanningStage
+  jobs:
+    - job: PlanningJob
+      steps:
+        - template: ../templates/terraform-init-preprod.yml
+        - template: ../templates/terraform-plan.yml
+
+- stage: ManualValidation
+  dependsOn: PlanningStage
+  condition: |
+    and(
+      succeeded(),
+      eq(variables['Build.SourceBranch'], 'refs/heads/main'),
+      ne(variables['Build.Reason'], 'PullRequest')
+    )
+  jobs:
+    - job: ManualValidation
+      pool: server
+      steps:
+        - task: ManualValidation@1
+          inputs:
+            notifyUsers: 'ankurramba.rf@gmail.com'
+
+- stage: ImplementationStage
+  dependsOn: ManualValidation
+  condition: |
+    and(
+      succeeded(),
+      eq(variables['Build.SourceBranch'], 'refs/heads/main'),
+      ne(variables['Build.Reason'], 'PullRequest')
+    )
+  jobs:
+    - job: Implementation
+      steps:
+        - template: ../templates/terraform-init-preprod.yml
+        - template: ../templates/terraform-apply.yml

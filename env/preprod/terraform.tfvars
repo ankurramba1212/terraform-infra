@@ -1,8 +1,9 @@
 parent_rg = {
   "rg1" = {
-    resource_group_name = "todo-rg"
+    resource_group_name = "todo-rg1-preprod"
     location            = "Central US"
   }
+
 }
 
 # parent_vnet = {

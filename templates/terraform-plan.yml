@@ -4,11 +4,11 @@ steps:
   inputs:
     provider: 'azurerm'
     command: 'validate'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/env/preprod'
+    workingDirectory: $(providerpath)
 - task: TerraformTask@5
   displayName: Terraform Plan
   inputs:
     provider: 'azurerm'
     command: 'plan'
-    workingDirectory: '$(System.DefaultWorkingDirectory)/env/preprod'
-    environmentServiceNameAzureRM: 'infra-sc'
+    workingDirectory: $(providerpath)
+    environmentServiceNameAzureRM: $(backend_SVC)
