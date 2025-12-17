@@ -1,0 +1,41 @@
+steps:
+- task: CmdLine@2
+  displayName: "Run TFLint"
+  inputs:
+    script: |
+      C:\devtools\tflint.exe --chdir="C:\Users\ankur\OneDrive\Desktop\DevOps\CICD_Pipeline\Infra_Pipeline\Infra-Pipeline" --recursive
+  continueOnError: true
+
+- task: CmdLine@2
+  displayName: "Run Trivy IaC Scan"
+  inputs:
+    script: |
+      trivy config "C:\Users\ankur\OneDrive\Desktop\DevOps\CICD_Pipeline\Infra_Pipeline\Infra-Pipeline"
+  continueOnError: true
+
+- task: CmdLine@2
+  displayName: "Run tfsec"
+  continueOnError: true
+  inputs:
+    script: |
+      C:\devtools\tfsec.exe "C:\Users\ankur\OneDrive\Desktop\DevOps\CICD_Pipeline\Infra_Pipeline\Infra-Pipeline"
+
+- task: CmdLine@2
+  displayName: "Run Terrascan"
+  continueOnError: true
+  inputs:
+    script: |
+      C:\devtools\terrascan.exe scan -i terraform -d "C:\Users\ankur\OneDrive\Desktop\DevOps\CICD_Pipeline\Infra_Pipeline\Infra-Pipeline"
+- task: CmdLine@2
+  displayName: "Run Checkov"
+  continueOnError: true
+  inputs:
+    script: |
+      checkov -d "C:\Users\ankur\OneDrive\Desktop\DevOps\CICD_Pipeline\Infra_Pipeline\Infra-Pipeline"
+# - task: CmdLine@2
+#   displayName: "Run Terratest"
+#   continueOnError: true
+#   inputs:
+#     script: |
+#       cd tests
+#       "C:\Program Files\Go\bin\go.exe" test -v

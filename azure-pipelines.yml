@@ -1,0 +1,56 @@
+
+trigger: none
+#  branches:
+#    include:
+#       - feature/*
+#       - main
+
+pool: 
+  name: infraagent
+  demands: Agent.Name -equals infraagentpool  # ye pool le full control ka syntax hai,real env main 1 pool ke ander single agent nahi hoga multiple agent honge to vaha demand bhu kaam ata hai
+
+  
+stages:
+  - stage: ScanningStage
+    displayName: Scanning Stage
+    jobs:
+    - job: Scanning
+      displayName: Scanning Stage
+      steps:
+       - template: templates/scanning.yml
+  
+
+  - stage: PlanningStage
+    displayName: Infra Planning Stage
+    jobs:
+      - job: Planningjob
+        displayName: Infra Planning Job
+        steps:
+          - template: templates/terraform-init-preprod.yml
+          - template: templates/terraform-plan.yml
+
+
+  - stage: ManualValidation
+    displayName: Manual Validation Stage
+    #parallel jobs ke liye
+    # dependsOn: [] 
+    jobs:
+      - job: ManualValidation
+        displayName: Manual Validation Job
+        pool: server
+        steps:
+          - task: ManualValidation@1
+            inputs:
+              notifyUsers: 'ankurramba.rf@gmail.com'
+
+
+  - stage: ImplementationStage
+    displayName: Implmentation Stage
+    jobs:
+      - job: Implmentation
+        displayName: Implmentation job
+        steps:
+          - template: templates/terraform-init-preprod.yml
+          - template: templates/terraform-apply.yml
+
+

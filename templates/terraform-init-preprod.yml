@@ -1,0 +1,13 @@
+# templates/terraform-init-step.yml
+steps:
+- task: TerraformTask@5
+  displayName: Terraform init
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/env/preprod'
+    backendServiceArm: 'infra-sc'
+    backendAzureRmResourceGroupName: 'ankur_rg_dont_delete'
+    backendAzureRmStorageAccountName: 'todoappaestorage1'
+    backendAzureRmContainerName: 'devcontainer'
+    backendAzureRmKey: 'preprod.terraform.tfstate'
